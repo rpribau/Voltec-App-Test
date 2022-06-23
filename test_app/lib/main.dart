@@ -2,6 +2,7 @@ import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:test_app/controller.dart';
 import 'package:test_app/models/feedback_form.dart';
+import 'package:gsheets/gsheets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   TextEditingController wheelController = TextEditingController();
 
   void _submitForm() {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       FeedbackForm feedbackForm = FeedbackForm(
         nameteamController.text,
         numteamController.text,
@@ -57,16 +58,20 @@ class _HomePageState extends State<HomePage> {
           _showSnackBar("Un error ha ocurrido, vuelve a intentarlo");
         }
       });
-    }
 
-    _showSnackBar("Enviando informacion");
-    formController.submitForm(FeedbackForm);
+      _showSnackBar("Enviando informacion");
+      formController.submitForm(feedbackForm);
+    }
   }
 
   _showSnackBar(String message) {
-    final snackbar = SnackBar(content: Text(message));
+    final snackbar = SnackBar(
+      content: Text(message),
+    );
 
-    _scaffoldKey.currentState.showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Lmao")));
+
+    //_scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
   @override
@@ -81,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                 TextFormField(
                   controller: nameteamController,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter Valid Name";
                     } else {
                       return null;
@@ -92,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                 TextFormField(
                   controller: numteamController,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter Valid Name";
                     } else {
                       return null;
@@ -103,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                 TextFormField(
                   controller: chasisController,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter Valid Name";
                     } else {
                       return null;
@@ -114,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                 TextFormField(
                   controller: wheelController,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Enter Valid Name";
                     } else {
                       return null;
@@ -122,6 +127,12 @@ class _HomePageState extends State<HomePage> {
                   },
                   decoration: InputDecoration(hintText: "Tipo de llantas"),
                 ),
+                ElevatedButton(
+                  onPressed: () {
+                    _submitForm();
+                  },
+                  child: Text("Guardar"),
+                )
               ]))),
     );
   }
